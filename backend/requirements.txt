@@ -1,0 +1,23 @@
+# Core dependencies
+numpy
+opencv-python
+Pillow
+
+# PyTorch + GPU (CUDA-enabled, Windows)
+torch==2.2.0+cu118
+torchvision==0.17.0+cu118
+torchaudio==2.2.0+cu118
+--extra-index-url https://download.pytorch.org/whl/cu118
+
+# FastAPI server
+fastapi
+uvicorn[standard]
+
+# MongoDB & utilities
+pymongo
+psutil
+GPUtil
+
+# Optional: For subprocesses or general purpose
+platformdirs
+python-multipart
