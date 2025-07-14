@@ -138,7 +138,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   if (isUpload && !videoUrl) {
     return (
       <div
-        className={`h-full border-2 border-dashed border-slate-600 rounded-lg flex flex-col items-center justify-center transition-all duration-200 ${
+        className={`h-full border-2 border-dashed border-slate-600 rounded flex flex-col items-center justify-center transition-all duration-200 ${
           isDragging ? 'border-teal-500 bg-teal-500/10' : 'hover:border-slate-500'
         }`}
         onDragOver={handleDragOver}
@@ -152,7 +152,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
         <p className="text-slate-500 text-sm mb-6">or</p>
         <button
           onClick={() => fileInputRef.current?.click()}
-          className="px-8 py-3 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition-colors text-lg font-medium"
+          className="px-8 py-3 bg-teal-600 text-white rounded hover:bg-teal-700 transition-colors text-lg font-medium"
         >
           Browse Files
         </button>
@@ -169,7 +169,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
 
   if (!videoUrl) {
     return (
-      <div className="h-full flex flex-col items-center justify-center bg-slate-900 rounded-lg">
+      <div className="h-full flex flex-col items-center justify-center bg-slate-900 rounded">
         <div className="w-20 h-20 bg-slate-700 rounded-full flex items-center justify-center mb-6">
           <Play className="w-10 h-10 text-slate-400" />
         </div>
@@ -179,7 +179,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
   }
 
   return (
-    <div className="h-full relative bg-black rounded-lg overflow-hidden">
+    <div className="h-full relative bg-black rounded overflow-hidden">
       <video
         ref={videoRef}
         src={videoUrl}
@@ -200,7 +200,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
             max={duration || 0}
             value={currentTime}
             onChange={handleSeek}
-            className="w-full h-1 bg-slate-600 rounded-lg appearance-none cursor-pointer slider"
+            className="w-full h-1 bg-slate-600 rounded appearance-none cursor-pointer slider"
           />
         </div>
         
@@ -235,7 +235,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
                 step="0.1"
                 value={isMuted ? 0 : volume}
                 onChange={handleVolumeChange}
-                className="w-20 h-1 bg-slate-600 rounded-lg appearance-none cursor-pointer slider"
+                className="w-20 h-1 bg-slate-600 rounded appearance-none cursor-pointer slider"
               />
             </div>
             
@@ -254,7 +254,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({
               </button>
               
               {showSettings && (
-                <div className="absolute bottom-8 right-0 bg-slate-800 border border-slate-600 rounded-md shadow-lg p-2 min-w-32">
+                <div className="absolute bottom-8 right-0 bg-slate-800 border border-slate-600 rounded shadow-lg p-2 min-w-32">
                   <div className="text-white text-sm mb-2">Playback Speed</div>
                   {[0.5, 0.75, 1, 1.25, 1.5, 2].map((rate) => (
                     <button

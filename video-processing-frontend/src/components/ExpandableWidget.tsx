@@ -21,7 +21,7 @@ const ExpandableWidget: React.FC<ExpandableWidgetProps> = ({
   }
 
   return (
-    <div className={`fixed top-20 ${position === 'left' ? 'left-6' : 'right-6'} w-80 h-96 bg-slate-800 border border-slate-600 rounded-lg shadow-lg z-40`}>
+    <div className={`fixed bottom-20 ${position === 'left' ? 'left-6' : 'right-6'} w-80 h-96 bg-slate-800 border border-slate-600 rounded shadow-lg z-40`}>
       <div className="flex items-center justify-between p-4 border-b border-slate-700">
         <h3 className="text-lg font-semibold text-white">{title}</h3>
         <button

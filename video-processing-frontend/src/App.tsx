@@ -1,9 +1,8 @@
 import React, { useState, useCallback } from 'react';
-import { Upload, Play, Loader2, CheckCircle } from 'lucide-react';
+import { Upload, Play, Loader2, CheckCircle, BarChart3 } from 'lucide-react';
 import Header from './components/Header';
 import VideoPlayer from './components/VideoPlayer';
 import ExpandableWidget from './components/ExpandableWidget';
-import PerformanceMetrics from './components/PerformanceMetrics';
 import ProcessingAnalytics from './components/ProcessingAnalytics';
 import { useVideoProcessing } from './hooks/useVideoProcessing';
 import type { VideoMetadata } from './types';
@@ -13,7 +12,7 @@ function App() {
   const [currentVideoUrl, setCurrentVideoUrl] = useState<string>('');
   const [selectedMethod, setSelectedMethod] = useState<string>('clahe');
   const [videoMetadata, setVideoMetadata] = useState<VideoMetadata | null>(null);
-  const [activeWidget, setActiveWidget] = useState<'performance' | 'analytics' | null>(null);
+  const [showAnalytics, setShowAnalytics] = useState<boolean>(false);
 
   const { 
     isProcessing, 
@@ -82,10 +81,6 @@ function App() {
     }
   }, [uploadedFile, selectedMethod, processVideo]);
 
-  const toggleWidget = useCallback((widget: 'performance' | 'analytics') => {
-    setActiveWidget(prev => prev === widget ? null : widget);
-  }, []);
-
   const getProcessingButtonContent = () => {
     if (isProcessing) {
       return (
@@ -113,8 +108,12 @@ function App() {
     );
   };
 
+  // Determine which video to show - processed video takes priority
+  const displayVideoUrl = processedVideoUrl || currentVideoUrl;
+  const videoTitle = processedVideoUrl ? 'Processed Video' : 'Original Video';
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-slate-900">
       <Header 
         selectedMethod={selectedMethod}
         onMethodChange={setSelectedMethod}
@@ -128,68 +127,50 @@ function App() {
             <button
               onClick={handleProcessStart}
               disabled={isProcessing}
-              className="flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-800 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors"
+              className="flex items-center gap-2 px-6 py-3 bg-teal-600 hover:bg-teal-700 disabled:bg-teal-800 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-colors"
             >
               {getProcessingButtonContent()}
             </button>
           </div>
         )}
 
-        {/* Video Display */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div>
-            <h2 className="text-xl font-semibold text-white mb-4">
-              {processedVideoUrl ? 'Original Video' : 'Video Upload'}
-            </h2>
+        {/* Single Video Display */}
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-xl font-semibold text-white mb-4">
+            {videoTitle}
+          </h2>
+          <div className="bg-slate-800 rounded-lg p-6" style={{ height: '500px' }}>
             <VideoPlayer
-              videoUrl={currentVideoUrl}
-              isUpload={!currentVideoUrl}
+              videoUrl={displayVideoUrl}
+              isUpload={!displayVideoUrl}
               onFileUpload={handleFileUpload}
             />
           </div>
-          
-          {processedVideoUrl && (
-            <div>
-              <h2 className="text-xl font-semibold text-white mb-4">Processed Video</h2>
-              <VideoPlayer
-                videoUrl={processedVideoUrl}
-              />
-            </div>
-          )}
         </div>
       </main>
 
-      {/* Widget Buttons */}
+      {/* Analytics Button */}
       <button
-        onClick={() => toggleWidget('performance')}
-        className="fixed left-6 bottom-6 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-colors z-50"
-        title="Performance Metrics"
+        onClick={() => setShowAnalytics(!showAnalytics)}
+        className="fixed right-6 bottom-6 bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-lg shadow-lg transition-colors z-50 flex items-center gap-2"
       >
-        <div className="w-6 h-6 flex items-center justify-center">📊</div>
+        <BarChart3 className="w-5 h-5" />
+        Analytics
+        <svg 
+          className={`w-4 h-4 transition-transform ${showAnalytics ? 'rotate-180' : ''}`} 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+        </svg>
       </button>
 
-      <button
-        onClick={() => toggleWidget('analytics')}
-        className="fixed right-6 bottom-6 bg-purple-600 hover:bg-purple-700 text-white p-3 rounded-full shadow-lg transition-colors z-50"
+      {/* Analytics Widget */}
+      <ExpandableWidget
+        isOpen={showAnalytics}
+        onClose={() => setShowAnalytics(false)}
         title="Analytics"
-      >
-        <div className="w-6 h-6 flex items-center justify-center">📈</div>
-      </button>
-
-      {/* Expandable Widgets */}
-      <ExpandableWidget
-        isOpen={activeWidget === 'performance'}
-        onClose={() => setActiveWidget(null)}
-        title="Performance Metrics"
-        position="left"
-      >
-        {videoMetadata && <PerformanceMetrics metadata={videoMetadata} />}
-      </ExpandableWidget>
-
-      <ExpandableWidget
-        isOpen={activeWidget === 'analytics'}
-        onClose={() => setActiveWidget(null)}
-        title="Processing Analytics"
         position="right"
       >
         <ProcessingAnalytics data={processingData} stats={processingStats} />
